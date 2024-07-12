@@ -1,0 +1,6 @@
+obd==0.7.2
+Pint==0.20.1
+PyQt5==5.15.10
+PyQt5-Qt5==5.15.14
+PyQt5-sip==12.13.0
+pyserial==3.5
