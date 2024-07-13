@@ -14,6 +14,35 @@ Item {
     property int animationDur: 2000
     property bool animation: false
 
+    // Draw background circle
+    Shape {
+
+        x: parent.height/2
+        y: parent.height/2
+
+        ShapePath {
+
+            strokeColor: "transparent"   
+            strokeWidth: 6
+
+            fillGradient: RadialGradient {
+                centerX: 0; centerY: 0
+                centerRadius: 360
+                focalX: centerX; focalY: centerY
+                GradientStop { position: 0; color: "black"; NumberAnimation on position { to: 0.7; easing.type: Easing.InOutQuad; duration: animationDur }}
+                GradientStop { position: 0; color: color4; NumberAnimation on position { to: .95; easing.type: Easing.InOutQuad; duration: animationDur }}
+                GradientStop { position: 0; color: "black"; NumberAnimation on position { to: 1.5; easing.type: Easing.InOutQuad; duration: animationDur }}
+            }
+
+            PathAngleArc {
+                centerX: 0; centerY: 0
+                radiusX: 360; radiusY: 360;
+                startAngle: 0
+                sweepAngle: 360
+            }
+        } 
+    }
+
     // Gauge border
     Repeater {
 

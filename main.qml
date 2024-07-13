@@ -42,6 +42,8 @@ ApplicationWindow {
 
     DefaultDash{}
 
+    Test{}
+
     Connections {
         target: backend
 
