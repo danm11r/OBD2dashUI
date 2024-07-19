@@ -96,12 +96,14 @@ Item {
         height: 540
         width: 540
 
+        dim: true
+
         header: ToolBar {
             Rectangle {
                 y: 50
                 height: 50
                 width: 540
-                color: color2
+                color: settings.color2
             }
             Label {
                 text: "Error"
@@ -112,14 +114,14 @@ Item {
             background: Rectangle {
 
                 implicitHeight: 100
-                color: color2
+                color: settings.color2
                 radius: 90
             }
         }
 
         background: Rectangle {
             color: "#2A2A2A"
-            border.color: color2
+            border.color: settings.color2
             border.width: arcWidth
             radius: 45
         }
@@ -152,7 +154,7 @@ Item {
             background: Rectangle {
                 implicitHeight: 100
                 implicitWidth: 200
-                color: color2
+                color: settings.color2
                 radius: 45
             }
 
@@ -176,7 +178,7 @@ Item {
             background: Rectangle {
                 implicitHeight: 100
                 implicitWidth: 200
-                color: color2
+                color: settings.color2
                 radius: 45
             }
 

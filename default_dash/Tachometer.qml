@@ -30,7 +30,7 @@ Item {
                 centerRadius: 360
                 focalX: centerX; focalY: centerY
                 GradientStop { position: 0; color: "black"; NumberAnimation on position { to: 0.7; easing.type: Easing.InOutQuad; duration: animationDur }}
-                GradientStop { position: 0; color: color4; NumberAnimation on position { to: .95; easing.type: Easing.InOutQuad; duration: animationDur }}
+                GradientStop { position: 0; color: settings.color4; NumberAnimation on position { to: .95; easing.type: Easing.InOutQuad; duration: animationDur }}
                 GradientStop { position: 0; color: "black"; NumberAnimation on position { to: 1.5; easing.type: Easing.InOutQuad; duration: animationDur }}
             }
 
@@ -56,7 +56,7 @@ Item {
             width: arcWidth/2
             height: arcWidth
             radius: 180
-            color: (rpm/1000*6 >= index && index/6*1000 >= redLine) ? "red" : (rpm/1000*6 >= index) ? "#50C878" : ((index/6)*1000 >= redLine) ? "#CE2029" : "#B4B4B4"            // color: (rpm/1000*6 >= index) ? "#50C878" : ((index/6)*1000 >= redLine) ? "#CE2029" : "#B4B4B4"
+            color: (rpm/1000*6 >= index && index/6*1000 >= redLine) ? "red" : (rpm/1000*6 >= index) ? settings.color1 : ((index/6)*1000 >= redLine) ? "#CE2029" : "#B4B4B4"
 
             property int transY: parent.width/2 + borderOffset
 
@@ -81,7 +81,7 @@ Item {
             width: arcWidth
             height: arcWidth*2
             radius: 180
-            color: (rpm/1000 >= index && index*1000 >= redLine) ? "red" : (rpm/1000 >= index) ? "#50C878" : ((index)*1000 >= redLine) ? "#CE2029" : "white"
+            color: (rpm/1000 >= index && index*1000 >= redLine) ? "red" : (rpm/1000 >= index) ? settings.color1 : ((index)*1000 >= redLine) ? "#CE2029" : "white"
 
             property int transY: parent.width/2 + borderOffset
 

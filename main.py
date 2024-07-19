@@ -15,6 +15,10 @@ import obd, time
 from obd import OBDStatus
 
 app = QGuiApplication(sys.argv)
+app.setOrganizationName("test")
+app.setOrganizationDomain("test.com")
+app.setApplicationName("dashUI")
+
 mainFont = QFont("noto sans")
 app.setFont(mainFont)
 app.setOverrideCursor(Qt.BlankCursor)
@@ -105,6 +109,8 @@ class Worker(QObject):
     status = pyqtSignal(int)
 
     def load(self):
+
+        time.sleep(5)
 
         # Create obd connection and start async
         print("Worker: OBD2 connection started...")

@@ -20,7 +20,7 @@ Item {
         height: parent.height
         radius: width/2
 
-        color: color4
+        color: settings.color4
     }
 
     // Draw tick marks for temp gauge
@@ -34,7 +34,7 @@ Item {
             width: arcWidth/2
             height: arcWidth
             radius: 180
-            color: color3
+            color: settings.color3
 
             transform: Rotation { origin.x: arcWidth/4; origin.y: parent.width/2; angle: index*(135/(maxTemp/100*3)) - 67.5} 
         }
@@ -50,7 +50,7 @@ Item {
             width: arcWidth/2
             height: arcWidth
             radius: 180
-            color: color1
+            color: settings.color1
 
             transform: Rotation { origin.x: arcWidth/4; origin.y: parent.width/2; angle: index*(135/(maxTemp/100)) - 67.5} 
         }
@@ -67,7 +67,7 @@ Item {
             font.pixelSize: 30
             font.bold: true
             font.italic: true
-            color: color1
+            color: settings.color1
         }
     }
 
@@ -81,7 +81,7 @@ Item {
             font.pixelSize: 30
             font.bold: true
             font.italic: true
-            color: color1
+            color: settings.color1
         }
     }
 
@@ -137,7 +137,7 @@ Item {
             width: arcWidth/2
             height: arcWidth
             radius: 180
-            color: color3
+            color: settings.color3
 
             transform: Rotation { origin.x: arcWidth/4; origin.y: parent.width/2; angle: index*(135/((maxBatt-minBatt)*2)) - 247.5} 
         }
@@ -153,7 +153,7 @@ Item {
             width: arcWidth/2
             height: arcWidth
             radius: 180
-            color: color1
+            color: settings.color1
 
             transform: Rotation { origin.x: arcWidth/4; origin.y: parent.width/2; angle: index*(135/(maxBatt-minBatt)) - 247.5} 
         }
@@ -170,7 +170,7 @@ Item {
             font.pixelSize: 30
             font.bold: true
             font.italic: true
-            color: color1
+            color: settings.color1
         }
     }
 
@@ -184,7 +184,7 @@ Item {
             font.pixelSize: 30
             font.bold: true
             font.italic: true
-            color: color1
+            color: settings.color1
         }
     }
 

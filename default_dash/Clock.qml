@@ -25,7 +25,7 @@ Item {
         height: parent.height
         radius: width/2
 
-        color: color4
+        color: settings.color4
 
         Text {
             anchors.centerIn: parent
@@ -47,7 +47,7 @@ Item {
             width: arcWidth/2
             height: arcWidth
             radius: 180
-            color: (time.second >= index) ? color1 : color3
+            color: (time.second >= index) ? settings.color1 : settings.color3
 
             transform: Rotation { origin.x: arcWidth/4; origin.y: parent.width/2; angle: index*6 } 
         }
@@ -61,7 +61,7 @@ Item {
         width: arcWidth*2
         height: arcWidth
         radius: 180
-        color: accent
+        color: settings.accent
     }
 
     Connections {
