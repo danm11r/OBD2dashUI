@@ -3,8 +3,11 @@
     
 import QtQuick 2.15
 import QtQuick.Shapes 1.15
+import QtQuick.Controls 2.15
 
 Item {
+
+    id: defaultDash
 
     anchors.fill: parent
 
@@ -68,6 +71,141 @@ Item {
     }
 
     TempGauge {}
-
     Clock{}
+
+    ErrorIcon {
+        id: errorIcon
+        visible: false
+    
+        width: 100
+        height: 100
+
+        anchors.centerIn: parent
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: errorMsg.open()
+        }
+    }
+
+    // Error dialog. Should be moved to seperate file
+    Dialog {
+        id: errorMsg
+        
+        anchors.centerIn: parent
+        height: 540
+        width: 540
+
+        header: ToolBar {
+            Rectangle {
+                y: 50
+                height: 50
+                width: 540
+                color: color2
+            }
+            Label {
+                text: "Error"
+                color: "white"
+                font.pixelSize: 54
+                anchors.centerIn: parent
+            }
+            background: Rectangle {
+
+                implicitHeight: 100
+                color: color2
+                radius: 90
+            }
+        }
+
+        background: Rectangle {
+            color: "#2A2A2A"
+            border.color: color2
+            border.width: arcWidth
+            radius: 45
+        }
+
+        contentItem: Text {
+            width: 540
+            wrapMode: Text.WordWrap
+            text: errorText
+            font.pixelSize: 48
+            color: "white"
+            leftPadding: 24
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        Button {
+
+            id: accentButton
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 24
+
+            contentItem: Text {
+                text: "Accept"
+                font.pixelSize: 48
+                color: "white"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            
+            background: Rectangle {
+                implicitHeight: 100
+                implicitWidth: 200
+                color: color2
+                radius: 45
+            }
+
+            DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+            onClicked: errorMsg.accept()
+        }
+
+        Button {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: accentButton.top
+            anchors.bottomMargin: 24
+
+            contentItem: Text {
+                text: "Retry"
+                font.pixelSize: 48
+                color: "white"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            
+            background: Rectangle {
+                implicitHeight: 100
+                implicitWidth: 200
+                color: color2
+                radius: 45
+            }
+
+            DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+            onClicked: {
+                backend.retry_connection()
+                errorMsg.accept()
+            }
+        }
+    }
+
+    states: [
+        State {
+            name: "errorState"
+            PropertyChanges { target: errorIcon; visible: true }
+        }
+    ]
+
+    Connections {
+        target: backend
+
+        function onError (errormsg) {
+            
+            if (errormsg == true) {
+                defaultDash.state = "errorState"
+                errorMsg.open()
+            }
+            else
+                defaultDash.state = ""
+        }
+    }
 }

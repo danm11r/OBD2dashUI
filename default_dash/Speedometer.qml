@@ -273,7 +273,7 @@ Item {
         height: 80
         color: "grey"
 
-        visible: false
+        visible: true
 
         MouseArea {
             anchors.fill: parent
@@ -290,7 +290,7 @@ Item {
         width: 80
         height: 80
 
-        visible: false
+        visible: true
 
         color: "grey"
 

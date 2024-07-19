@@ -6,12 +6,13 @@ import random
 
 from PyQt5.QtGui import QGuiApplication, QFont, QCursor
 from PyQt5.QtQml import QQmlApplicationEngine
-from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal, pyqtSlot, QRunnable, QThread
 
 from time import strftime, localtime
 from datetime import datetime
 
-import readOBD
+import obd, time
+from obd import OBDStatus
 
 app = QGuiApplication(sys.argv)
 mainFont = QFont("noto sans")
@@ -27,6 +28,7 @@ class Backend(QObject):
     #Signal for data
     data = pyqtSignal(int, int, int, int, arguments=['speed', 'rpm', 'temp', 'battery'])
     time = pyqtSignal(str, str, int, bool, arguments=['hour_text', 'minute_text', 'second', 'PM'])
+    error = pyqtSignal(bool)
 
     def __init__(self):
         super().__init__()
@@ -42,26 +44,45 @@ class Backend(QObject):
         self.timer2.timeout.connect(self.update_time)
         self.timer2.start()
 
-    #Once the startup animation is finished, this starts the timer to poll the OBD connection 
+        # Create worker for OBD2
+        self.obj = Worker()
+        self.thread = QThread()
+        self.obj.moveToThread(self.thread)
+        self.thread.started.connect(self.obj.load)
+        self.obj.status.connect(self.onStatus)
+        self.obj.data.connect(self.data)
+        self.thread.start()
+
+    # Once the startup animation has finished, attempt to read data
     @pyqtSlot()
     def load_data(self):
         
-        print("OBD2 started")
-        response = readOBD.update()
+        self.obj.update()
 
-        if (response[4] == 1):
-            print("OBD2 connection failed")
-
-        else:
-            print("OBD2 connection successful")
-            self.data.emit(response[0], response[1], response[2], response[3])
-            self.timer1.start()
-
+    # After getting OBD data, start timer to regularly update
     def update_data(self):
 
-        print("Updating data")
-        response = readOBD.update()
-        self.data.emit(response[0], response[1], response[2], response[3])
+        self.obj.update()
+
+    # Attempt to load data again
+    @pyqtSlot()
+    def retry_connection(self):
+
+        print("Retrying connection...")
+
+        self.obj.load()
+
+    def onStatus(self, i):
+
+        # If status 0, OBD was sucessful. Start timer and load data
+        if (i == 0):
+            self.timer1.start()
+            self.error.emit(False)
+        
+        # If status 1, OBD failed. 
+        if (i == 1):
+            self.error.emit(True)
+            self.timer1.stop()
 
     def update_time(self):
         
@@ -76,8 +97,66 @@ class Backend(QObject):
   
         self.time.emit(hour, minute, time.tm_sec, PM)
 
+# Worker thread for OBD2 communication
+class Worker(QObject):
+
+    # Signal for data
+    data = pyqtSignal(int, int, int, int, arguments=['speed', 'rpm', 'temp', 'battery'])
+    status = pyqtSignal(int)
+
+    def load(self):
+
+        # Create obd connection and start async
+        print("Worker: OBD2 connection started...")
+        
+        self.connection = obd.Async(delay_cmds=0)
+        self.connection.watch(obd.commands.RPM)
+        self.connection.watch(obd.commands.SPEED)
+        self.connection.watch(obd.commands.COOLANT_TEMP)
+        self.connection.watch(obd.commands.CONTROL_MODULE_VOLTAGE)
+        self.connection.start()
+
+        time.sleep(1)
+
+        if (self.connection.status() == OBDStatus.NOT_CONNECTED):
+            print("Worker: OBD2 adapter not connected")
+            self.status.emit(1)
+
+        elif (self.connection.status() == OBDStatus.CAR_CONNECTED):
+            print("Worker: OBD2 connection successful")
+            self.status.emit(0)
+
+        elif (self.connection.status() == OBDStatus.ELM_CONNECTED):
+            print("Worker: OBD2 connection successful, but no connection to vehicle")
+            self.status.emit(1)
+
+        else:
+            print("Worker: Unrecognized error...")
+
+
+    def update(self):
+
+        speed = self.connection.query(obd.commands.SPEED)
+        rpm = self.connection.query(obd.commands.RPM)
+        temp = self.connection.query(obd.commands.COOLANT_TEMP)
+        battery = self.connection.query(obd.commands.CONTROL_MODULE_VOLTAGE)
+
+        try:
+            print(int(speed.value.to('mph').magnitude))
+            print(int(rpm.value.magnitude))
+            print(int(temp.value.to('fahrenheit').magnitude))
+            print(int(battery.value.magnitude))
+            self.status.emit(0)
+            self.data.emit(int(speed.value.to('mph').magnitude), int(rpm.value.magnitude), int(temp.value.to('fahrenheit').magnitude), int(battery.value.magnitude))
+
+        except:
+            print("Worker: OBD2 connection failed... was the vehicle disconnected?")
+            self.status.emit(1)
+            self.data.emit(0, 0, 0, 10)
+
 backend = Backend()
-engine.rootObjects()[0].setProperty('backend', backend )
+worker = Worker()
+engine.rootObjects()[0].setProperty('backend', backend)
 backend.update_time()
 
 sys.exit(app.exec())

@@ -40,9 +40,9 @@ ApplicationWindow {
     property string accent: "#CE2029"
     property string bgcolor: "#2A2A2A"   
 
-    DefaultDash{}
+    property string errorText: "OBD2 Connection Failed!"
 
-    Test{}
+    DefaultDash{}
 
     Connections {
         target: backend
