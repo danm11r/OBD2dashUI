@@ -29,10 +29,14 @@ engine.load('main.qml')
 
 class Backend(QObject):
 
-    #Signal for data
-    data = pyqtSignal(int, int, int, int, arguments=['speed', 'rpm', 'temp', 'battery'])
+    # Signala for QML
+    data = pyqtSignal(int, int, int, float, arguments=['speed', 'rpm', 'temp', 'battery'])
     time = pyqtSignal(str, str, int, bool, arguments=['hour_text', 'minute_text', 'second', 'PM'])
     error = pyqtSignal(bool)
+    
+    # Signals for OBD2 worker
+    updateOBD2 = pyqtSignal()
+    retryOBD2 = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -40,7 +44,7 @@ class Backend(QObject):
         #100ms timer for data update
         self.timer1 = QTimer()
         self.timer1.setInterval(100)
-        self.timer1.timeout.connect(self.update_data)
+        self.timer1.timeout.connect(self.updateOBD2)
 
         #500ms timer for time update
         self.timer2 = QTimer()
@@ -48,33 +52,26 @@ class Backend(QObject):
         self.timer2.timeout.connect(self.update_time)
         self.timer2.start()
 
-        # Create worker for OBD2
-        self.obj = Worker()
+        # Create worker for OBD2, connect signals and slots
+        self.OBD2_worker = OBD2Worker()
         self.thread = QThread()
-        self.obj.moveToThread(self.thread)
-        self.thread.started.connect(self.obj.load)
-        self.obj.status.connect(self.onStatus)
-        self.obj.data.connect(self.data)
+
+        self.OBD2_worker.status.connect(self.onStatus)
+        self.OBD2_worker.data.connect(self.data)
+        self.OBD2_worker.moveToThread(self.thread)
+
+        self.thread.started.connect(self.OBD2_worker.load)
+        self.updateOBD2.connect(self.OBD2_worker.update)
+        self.retryOBD2.connect(self.OBD2_worker.load)
+
         self.thread.start()
-
-    # Once the startup animation has finished, attempt to read data
-    @pyqtSlot()
-    def load_data(self):
-        
-        self.obj.update()
-
-    # After getting OBD data, start timer to regularly update
-    def update_data(self):
-
-        self.obj.update()
 
     # Attempt to load data again
     @pyqtSlot()
     def retry_connection(self):
 
         print("Retrying connection...")
-
-        self.obj.load()
+        self.retryOBD2.emit()
 
     def onStatus(self, i):
 
@@ -85,8 +82,8 @@ class Backend(QObject):
         
         # If status 1, OBD failed. 
         if (i == 1):
-            self.error.emit(True)
             self.timer1.stop()
+            self.error.emit(True)
 
     def update_time(self):
         
@@ -102,18 +99,17 @@ class Backend(QObject):
         self.time.emit(hour, minute, time.tm_sec, PM)
 
 # Worker thread for OBD2 communication
-class Worker(QObject):
+class OBD2Worker(QObject):
 
     # Signal for data
-    data = pyqtSignal(int, int, int, int, arguments=['speed', 'rpm', 'temp', 'battery'])
+    data = pyqtSignal(int, int, int, float, arguments=['speed', 'rpm', 'temp', 'battery'])
     status = pyqtSignal(int)
 
+    # Initial data load
     def load(self):
 
-        time.sleep(5)
-
         # Create obd connection and start async
-        print("Worker: OBD2 connection started...")
+        print("OBD2Worker: OBD2 connection started...")
         
         self.connection = obd.Async(delay_cmds=0)
         self.connection.watch(obd.commands.RPM)
@@ -122,25 +118,28 @@ class Worker(QObject):
         self.connection.watch(obd.commands.CONTROL_MODULE_VOLTAGE)
         self.connection.start()
 
+        # Small delay so that connection object exists for query immediatly after
         time.sleep(1)
 
         if (self.connection.status() == OBDStatus.NOT_CONNECTED):
-            print("Worker: OBD2 adapter not connected")
+            print("OBD2Worker: OBD2 adapter not connected")
             self.status.emit(1)
 
         elif (self.connection.status() == OBDStatus.CAR_CONNECTED):
-            print("Worker: OBD2 connection successful")
+            print("OBD2Worker: OBD2 connection successful")
             self.status.emit(0)
 
         elif (self.connection.status() == OBDStatus.ELM_CONNECTED):
-            print("Worker: OBD2 connection successful, but no connection to vehicle")
+            print("OBD2Worker: OBD2 connection successful, but no connection to vehicle")
             self.status.emit(1)
 
         else:
-            print("Worker: Unrecognized error...")
+            print("OBD2Worker: Unrecognized error...")
 
 
     def update(self):
+
+        print("OBD2Worker: Updating data...")
 
         speed = self.connection.query(obd.commands.SPEED)
         rpm = self.connection.query(obd.commands.RPM)
@@ -151,17 +150,16 @@ class Worker(QObject):
             print(int(speed.value.to('mph').magnitude))
             print(int(rpm.value.magnitude))
             print(int(temp.value.to('fahrenheit').magnitude))
-            print(int(battery.value.magnitude))
+            print(float(battery.value.magnitude))
             self.status.emit(0)
-            self.data.emit(int(speed.value.to('mph').magnitude), int(rpm.value.magnitude), int(temp.value.to('fahrenheit').magnitude), int(battery.value.magnitude))
+            self.data.emit(int(speed.value.to('mph').magnitude), int(rpm.value.magnitude), int(temp.value.to('fahrenheit').magnitude), round(float(battery.value.magnitude),1))
 
         except:
-            print("Worker: OBD2 connection failed... was the vehicle disconnected?")
+            print("OBD2Worker: OBD2 connection failed... was the vehicle disconnected?")
             self.status.emit(1)
             self.data.emit(0, 0, 0, 10)
 
 backend = Backend()
-worker = Worker()
 engine.rootObjects()[0].setProperty('backend', backend)
 backend.update_time()
 

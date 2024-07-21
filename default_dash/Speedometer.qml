@@ -219,7 +219,6 @@ Item {
             NumberAnimation { target: main; property: "battery"; easing.type: Easing.InOutQuad; to: minBatt; duration: 1000 }
         }
         onFinished: {
-            // Invoke load_data slot once gauge sweep is finished
             console.log("Starting animation complete")
             enableMask = false
             enableAnimation = true
@@ -270,7 +269,7 @@ Item {
         width: 80
         height: 80
 
-        visible: false
+        visible: true
 
         color: "grey"
 
