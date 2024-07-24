@@ -14,6 +14,8 @@ from datetime import datetime
 import obd, time
 from obd import OBDStatus
 
+from monitorcontrol import get_monitors
+
 app = QGuiApplication(sys.argv)
 app.setOrganizationName("test")
 app.setOrganizationDomain("test.com")
@@ -37,6 +39,10 @@ class Backend(QObject):
     # Signals for OBD2 worker
     updateOBD2 = pyqtSignal()
     retryOBD2 = pyqtSignal()
+
+    # Signals for DDC/CI worker
+    minBright = pyqtSignal()
+    setBright = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
@@ -66,13 +72,37 @@ class Backend(QObject):
 
         self.thread.start()
 
+        # Create worker for DDC/CI, connect signals and slots
+        self.DDCCI_worker = DDCCIWorker()
+        self.thread2 = QThread()
+
+        self.DDCCI_worker.moveToThread(self.thread2)
+
+        self.minBright.connect(self.DDCCI_worker.minBrightness)
+        self.setBright.connect(self.DDCCI_worker.setBrightness)
+
+        self.thread2.start()
+
     # Attempt to load data again
     @pyqtSlot()
     def retry_connection(self):
 
         print("Retrying connection...")
+        
         self.retryOBD2.emit()
 
+    # Update display brightness and contrast from settings page
+    @pyqtSlot(int)
+    def update_brightness(self, i):
+
+        print("Updating brightness...")
+        
+        if (i == 0):
+            self.minBright.emit()
+        elif (i == 1):
+            self.setBright.emit(50)
+
+    # Respond to status from OBD2Worker
     def onStatus(self, i):
 
         # If status 0, OBD was sucessful. Start timer and load data
@@ -105,7 +135,6 @@ class OBD2Worker(QObject):
     data = pyqtSignal(int, int, int, float, arguments=['speed', 'rpm', 'temp', 'battery'])
     status = pyqtSignal(int)
 
-    # Initial data load
     def load(self):
 
         # Create obd connection and start async
@@ -136,7 +165,6 @@ class OBD2Worker(QObject):
         else:
             print("OBD2Worker: Unrecognized error...")
 
-
     def update(self):
 
         print("OBD2Worker: Updating data...")
@@ -158,6 +186,39 @@ class OBD2Worker(QObject):
             print("OBD2Worker: OBD2 connection failed... was the vehicle disconnected?")
             self.status.emit(1)
             self.data.emit(0, 0, 0, 10)
+
+# Worker thread for DDC/CI communication
+class DDCCIWorker(QObject):
+
+    # Set LCD backlight to minimum brightness level for night. This also sets contrast to zero, as the panel is still too bright otherwise
+    def minBrightness(self):
+
+        print("DDCCIWorker: Setting LCD to min brightness...")
+
+        try: 
+            for monitor in get_monitors():
+                with monitor:
+                    monitor.set_contrast(0)
+                    time.sleep(.1)
+                    monitor.set_luminance(0)
+        
+        except:
+            print("DDCCIWorker: Brightness adjustment failed... is the i2c kernel module enabled?")
+
+    # Set LCD backlight to custom level. This will set contrast to default of 50. 
+    def setBrightness(self, i):
+
+        print("DDCCIWorker: Setting LCD to custom brightness...")
+
+        try:
+            for monitor in get_monitors():
+                with monitor:
+                    monitor.set_contrast(50)
+                    time.sleep(.1)
+                    monitor.set_luminance(i)
+
+        except:
+            print("DDCCIWorker: Brightness adjustment failed... is the i2c kernel module enabled?")
 
 backend = Backend()
 engine.rootObjects()[0].setProperty('backend', backend)

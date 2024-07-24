@@ -56,7 +56,7 @@ ApplicationWindow {
 
     DefaultDash{}
     MenuOverlay{}
-
+    
     Connections {
         target: backend
 

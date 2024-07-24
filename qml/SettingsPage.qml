@@ -12,7 +12,7 @@ Item {
     anchors.centerIn: parent
     
     width: 720
-    height: 540
+    height: 640
     
     property int buttonSize: 100
     property int buttonGap: 25
@@ -154,5 +154,19 @@ Item {
                 }
             }
         }
+    }
+
+    Row {
+        
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: 490
+
+        Text {
+            text: "Brightness: "
+            color: "white"
+            font.pixelSize: 54
+        }
+
+        CustomSwitch{ height: 100; width: 200 }
     }
 }
