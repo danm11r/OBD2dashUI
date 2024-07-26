@@ -4,6 +4,8 @@
 
 import QtQuick 2.15
 import QtQuick.Shapes 1.15
+import QtQuick.Controls 2.15
+import QtQuick.Controls.Styles 1.4
 
 Item {
 
@@ -154,6 +156,27 @@ Item {
         }
     }
 
+    // Brightness slider from 1 to 100
+    Slider {
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: 490
+
+        stepSize: 10
+        from: 1
+        value: settings.currentBrightness
+        to: 100
+
+        onMoved: {
+
+            // Pass updated brightness value to brightness slot 
+            if (settings.currentBrightness != value) {
+                backend.update_brightness(value)
+                settings.currentBrightness = value
+            }
+        }
+    }
+
+    /* Brightness toggle switch replaced by slider
     Row {
         
         anchors.horizontalCenter: parent.horizontalCenter
@@ -166,5 +189,5 @@ Item {
         }
 
         CustomSwitch{ height: 100; width: 200 }
-    }
+    } */
 }

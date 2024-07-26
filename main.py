@@ -97,10 +97,12 @@ class Backend(QObject):
 
         print("Updating brightness...")
         
-        if (i == 0):
+        # Special case for brightness = 1, because contrast will also be set to 0
+        if (i == 1):
             self.minBright.emit()
-        elif (i == 1):
-            self.setBright.emit(50)
+        else:
+            self.setBright.emit(i)
+            print(i)
 
     # Respond to status from OBD2Worker
     def onStatus(self, i):
@@ -199,7 +201,7 @@ class DDCCIWorker(QObject):
             for monitor in get_monitors():
                 with monitor:
                     monitor.set_contrast(0)
-                    time.sleep(.1)
+                    time.sleep(.05)
                     monitor.set_luminance(0)
         
         except:
@@ -214,7 +216,7 @@ class DDCCIWorker(QObject):
             for monitor in get_monitors():
                 with monitor:
                     monitor.set_contrast(50)
-                    time.sleep(.1)
+                    time.sleep(.05)
                     monitor.set_luminance(i)
 
         except:

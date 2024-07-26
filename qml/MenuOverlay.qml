@@ -99,6 +99,50 @@ Item {
                 ColorAnimation { target: settingsButton; property: "color"; duration: 100 }
             }
         }
+
+        // TEMPORARY Test button
+        Rectangle {
+
+            id: testButton
+
+            anchors.bottom: settingsButton.top
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.bottomMargin: 10
+
+            width: iconSize
+            height: iconSize
+            radius: iconSize/2
+
+            color: settings.color4
+
+            Text {
+                anchors.centerIn: parent
+                text: "T"
+                color: "white"
+                font.pixelSize: iconSize*.6
+                font.bold: true
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: { 
+                    testButton.state == 'clicked' ? testButton.state = "" : testButton.state = 'clicked';
+                }
+            }
+
+            states: [
+                State {
+                    name: "clicked"
+                    PropertyChanges { target: testButton; color: settings.color2 }
+                    PropertyChanges { target: testLoader; active: true }
+                }
+            ]
+
+            transitions: Transition {
+                ColorAnimation { target: testButton; property: "color"; duration: 100 }
+            }
+        }
     }
 
     Loader { 
@@ -106,6 +150,39 @@ Item {
         id: settingsLoader
         active: false
         source: "SettingsPage.qml"
+    }
+
+    Loader { 
+        anchors.fill: parent
+        id: testLoader
+        active: false
+        sourceComponent: Item {
+
+            x: -fastBlur2.width
+        
+            Rectangle {
+                anchors.fill: fastBlur2
+                color: "#2A2A2A"
+                radius: overlayWidth/2
+            }
+        
+            FastBlur {
+                id: fastBlur2
+        
+                height: parent.height
+                width: parent.width*.5
+                
+                radius: 128
+                opacity: 0.2
+        
+                source: ShaderEffectSource {
+                    sourceItem: defaultDash
+                    sourceRect: Qt.rect(fastBlur2.x-fastBlur2.width, fastBlur2.y, fastBlur2.width, fastBlur2.height)
+                }
+
+                NumberAnimation on x { to: 130 + fastBlur2.width; easing.type: Easing.InOutQuad; duration: 250 }
+            }
+        }
     }
 
     // Menu button
@@ -148,6 +225,7 @@ Item {
             PropertyChanges { target: fastBlur; x: overlayWidth }
             PropertyChanges { target: menuItems; x: 0 }
             PropertyChanges { target: settingsButton; state: "" }
+            PropertyChanges { target: testButton; state: "" }
         }
     ]
 

@@ -49,6 +49,8 @@ ApplicationWindow {
         property string accent: "#CE2029"
         property string bgcolor: "#2A2A2A"   
         property int selectedThemeIndex: 0
+
+        property int currentBrightness: 0
     }
 
     property string errorText: "OBD2 Connection Failed!"
