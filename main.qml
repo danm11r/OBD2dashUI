@@ -5,7 +5,6 @@ import Qt.labs.settings 1.0
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Shapes 1.15
-import QtGraphicalEffects 1.12
 
 import "./qml"
 import "./default_dash"
@@ -54,9 +53,9 @@ ApplicationWindow {
 
     property string errorText: "OBD2 Connection Failed!"
 
-    DefaultDash{}
+    DefaultDash{ id: defaultDash }
     MenuOverlay{}
-    
+
     Connections {
         target: backend
 

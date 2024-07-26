@@ -22,14 +22,14 @@ Item {
     // Mask off the area beyond the gauges only during the startup animation
     Loader {
 
-        active: enableMask
+        active: true // Currently set to true to resolve issue with menu overlay transparency
         sourceComponent: Item {
             Rectangle {
-                    id: background
-                    height: 720
-                    width: 1600
-                    opacity: 0.0
-                }
+                id: background
+                height: 720
+                width: 1600
+                opacity: 0.0
+            }
 
             Rectangle {
                 id: gaugeMask

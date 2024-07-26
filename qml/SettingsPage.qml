@@ -9,8 +9,6 @@ Item {
 
     id: settingsPage
 
-    anchors.centerIn: parent
-    
     width: 720
     height: 640
     

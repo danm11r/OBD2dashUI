@@ -3,6 +3,7 @@
 
 import QtQuick 2.15
 import QtQuick.Shapes 1.15
+import QtGraphicalEffects 1.12
 
 Item {
 
@@ -11,34 +12,48 @@ Item {
     anchors.fill: parent
 
     property int iconSize: 100
+    property int overlayWidth: 120
     property int animationDur: 250
 
-    // Menu background
+    // Blurred window for menu overlay background
     Item {
 
-        id: menuBackground
+        width: overlayWidth
+        height: parent.height
 
-        width: 120
+        x: -overlayWidth
+    
+        Rectangle {
+            anchors.fill: fastBlur
+            color: "#2A2A2A"
+            radius: width/2
+        }
+    
+        FastBlur {
+            id: fastBlur
+    
+            height: parent.height
+            width: parent.width
+            
+            radius: 64
+            opacity: 0.2
+    
+            source: ShaderEffectSource {
+                sourceItem: defaultDash
+                sourceRect: Qt.rect(fastBlur.x-overlayWidth, fastBlur.y, fastBlur.width, fastBlur.height)
+            }
+        }
+    }
+
+    // Buttons for each item in menu
+    Item {
+
+        id: menuItems
+
+        width: overlayWidth
         height: parent.height
         
         x: -width
-
-        Rectangle {
-            
-            width: parent.width
-            height: parent.height
-
-            radius: width/2
-            
-            color: "#2A2A2A"
-        }
-        Rectangle {
-            
-            width: parent.width/2
-            height: parent.height
-            
-            color: "#2A2A2A"
-        }
 
         // Settings button
         Rectangle {
@@ -71,6 +86,7 @@ Item {
                 }
             }
 
+            // Load settings page and animate swipe in when settings button clicked
             states: [
                 State {
                     name: "clicked"
@@ -80,13 +96,13 @@ Item {
             ]
 
             transitions: Transition {
-                ColorAnimation { target: settingsButton; property: "color"; duration: animationDur }
+                ColorAnimation { target: settingsButton; property: "color"; duration: 100 }
             }
         }
     }
 
     Loader { 
-        anchors.centerIn:parent
+        anchors.centerIn: parent
         id: settingsLoader
         active: false
         source: "SettingsPage.qml"
@@ -129,7 +145,8 @@ Item {
             name: "clicked"
             PropertyChanges { target: menuButton; color: settings.color2 }
             PropertyChanges { target: menuButton; rotation: 360 }
-            PropertyChanges { target: menuBackground; x: 0 }
+            PropertyChanges { target: fastBlur; x: overlayWidth }
+            PropertyChanges { target: menuItems; x: 0 }
             PropertyChanges { target: settingsButton; state: "" }
         }
     ]
@@ -137,6 +154,7 @@ Item {
     transitions: Transition {
         ColorAnimation { target: menuButton; property: "color"; duration: animationDur }
         RotationAnimation { target: menuButton; duration: animationDur }
-        NumberAnimation { target: menuBackground; property: "x"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: fastBlur; property: "x"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: menuItems; property: "x"; easing.type: Easing.InOutQuad; duration: animationDur }
     }
 }
