@@ -19,7 +19,7 @@ Item {
             width: arcWidth/2
             height: arcWidth
             radius: 180
-            color: settings.color1
+            color: settings.color2
 
             transform: Rotation { origin.x: arcWidth/4; origin.y: parent.width/2; angle: index*60 } 
         }
@@ -29,7 +29,7 @@ Item {
 
         anchors.centerIn: parent
 
-        color: settings.color1
+        color: settings.color2
         height: 25
         width: 25
         radius: 180
