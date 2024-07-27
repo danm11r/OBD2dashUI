@@ -5,7 +5,6 @@
 import QtQuick 2.15
 import QtQuick.Shapes 1.15
 import QtQuick.Controls 2.15
-import QtQuick.Controls.Styles 1.4
 
 Item {
 
@@ -156,20 +155,55 @@ Item {
         }
     }
 
-    // Brightness slider from 1 to 100
-    Slider {
+    Row {
+
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 490
+        y: 510
 
-        stepSize: 10
-        from: 1
-        value: settings.currentBrightness
-        to: 100
+        BrightnessIcon { height: 75; width: 75 }
 
-        onMoved: {
+        // Brightness slider from 1 to 100
+        Slider {
 
-            // Pass updated brightness value to brightness slot 
-            if (settings.currentBrightness != value) {
+            id: control
+
+            stepSize: 10
+            from: 1
+            value: settings.currentBrightness
+            to: 100
+
+            leftPadding: 25
+
+            background: Rectangle {
+                x: control.leftPadding
+                y:  control.availableHeight / 2 - height / 2
+                implicitWidth: 400
+                implicitHeight: 25
+                width: control.availableWidth
+                height: implicitHeight
+                radius: 180
+                color: "#bdbebf"
+
+                Rectangle {
+                    width: control.visualPosition * parent.width
+                    height: parent.height
+                    color: settings.color2
+                    radius: 180
+                }
+            }
+            
+            handle: Rectangle {
+                x: control.leftPadding + control.visualPosition * (control.availableWidth - width)
+                y: control.availableHeight / 2 - height / 2
+                implicitWidth: 75
+                implicitHeight: 75
+                radius: width/2
+                color: control.pressed ? "#f0f0f0" : "#f6f6f6"
+                border.color: "#bdbebf"
+            }
+
+            // Only update when slider is clicked or released because brightness updates are too slow for continuous updating
+            onPressedChanged: {
                 backend.update_brightness(value)
                 settings.currentBrightness = value
             }
