@@ -12,7 +12,7 @@ Item {
     property int timerCount: 0
     property int borderOffset: 100
 
-    // Draw background circle
+    // Draw background gradient
     Shape {
 
         x: parent.height/2
