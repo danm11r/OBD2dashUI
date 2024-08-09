@@ -11,7 +11,6 @@ Item {
 
     anchors.fill: parent
 
-    property int arcWidth: 16
     property bool enableMask: true
     property bool enableAnimation: false
     property int animationDur: 2000
@@ -88,108 +87,6 @@ Item {
         }
     }
 
-    // Error dialog. Should be moved to seperate file
-    Dialog {
-        id: errorMsg
-        
-        anchors.centerIn: parent
-        height: 540
-        width: 540
-
-        dim: true
-
-        header: ToolBar {
-            Rectangle {
-                y: 50
-                height: 50
-                width: 540
-                color: settings.color2
-            }
-            Label {
-                text: "Error"
-                color: "white"
-                font.pixelSize: 54
-                anchors.centerIn: parent
-            }
-            background: Rectangle {
-
-                implicitHeight: 100
-                color: settings.color2
-                radius: 90
-            }
-        }
-
-        background: Rectangle {
-            color: "#2A2A2A"
-            border.color: settings.color2
-            border.width: arcWidth
-            radius: 45
-        }
-
-        contentItem: Text {
-            width: 540
-            wrapMode: Text.WordWrap
-            text: errorText
-            font.pixelSize: 48
-            color: "white"
-            leftPadding: 24
-            horizontalAlignment: Text.AlignHCenter
-        }
-
-        Button {
-
-            id: accentButton
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 24
-
-            contentItem: Text {
-                text: "Accept"
-                font.pixelSize: 48
-                color: "white"
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            
-            background: Rectangle {
-                implicitHeight: 100
-                implicitWidth: 200
-                color: settings.color2
-                radius: 45
-            }
-
-            DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
-            onClicked: errorMsg.accept()
-        }
-
-        Button {
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: accentButton.top
-            anchors.bottomMargin: 24
-
-            contentItem: Text {
-                text: "Retry"
-                font.pixelSize: 48
-                color: "white"
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            
-            background: Rectangle {
-                implicitHeight: 100
-                implicitWidth: 200
-                color: settings.color2
-                radius: 45
-            }
-
-            DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
-            onClicked: {
-                backend.retry_connection()
-                errorMsg.accept()
-            }
-        }
-    }
-
     states: [
         State {
             name: "errorState"
@@ -204,7 +101,6 @@ Item {
             
             if (errormsg == true) {
                 defaultDash.state = "errorState"
-                errorMsg.open()
             }
             else
                 defaultDash.state = ""

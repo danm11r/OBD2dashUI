@@ -100,7 +100,7 @@ Item {
             }
         }
 
-        // TEMPORARY Test button
+        /* TEMPORARY Test button
         Rectangle {
 
             id: testButton
@@ -142,7 +142,7 @@ Item {
             transitions: Transition {
                 ColorAnimation { target: testButton; property: "color"; duration: 100 }
             }
-        }
+        } */
     }
 
     Loader { 
@@ -151,8 +151,8 @@ Item {
         active: false
         source: "SettingsPage.qml"
     }
-
-    Loader { 
+    
+    /* Loader { 
         anchors.fill: parent
         id: testLoader
         active: false
@@ -183,7 +183,7 @@ Item {
                 NumberAnimation on x { to: 130 + fastBlur2.width; easing.type: Easing.InOutQuad; duration: 250 }
             }
         }
-    }
+    } */
 
     // Menu button
     Rectangle {
@@ -225,7 +225,6 @@ Item {
             PropertyChanges { target: fastBlur; x: overlayWidth }
             PropertyChanges { target: menuItems; x: 0 }
             PropertyChanges { target: settingsButton; state: "" }
-            PropertyChanges { target: testButton; state: "" }
         }
     ]
 
