@@ -15,7 +15,7 @@ Item {
     property string hour
     property string minute
     property int textSize: 80
-    property var time: {'hour_text': "0", 'minute_text': "0", 'second': 0, 'PM': false }
+    property var time: {'hour': 0, 'minute': 0, 'second': 0, 'hour_text': "0", 'minute_text': "0", 'PM': false } // This shares the same name as the signal and should probably be changed to something else
 
     Rectangle {
         x: -width/2
@@ -67,8 +67,8 @@ Item {
     Connections {
         target: backend
 
-        function onTime (hour_text, minute_text, second, PM) {
-            time = {'hour_text': hour_text, 'minute_text': minute_text, 'second': second, 'PM': PM };
+        function onTime (hour, minute, second, hour_text, minute_text, PM) {
+            time = {'hour': hour, 'minute': minute, 'second': second, 'hour_text': hour_text, 'minute_text': minute_text, 'PM': PM};
         }
     }
 

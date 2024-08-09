@@ -16,8 +16,16 @@ Item {
     property bool enableAnimation: false
     property int animationDur: 2000
 
+    property int widgetRadius: 180
+
     AnalogClock {}
 
+    // Row and column positioning should be used once final placement determined
+    Speedometer { x: 130 }
+    
+    Tachometer { x: 150 + widgetRadius*2 }
+
+    // Temporarily disabled until final location determined
     ErrorIcon {
         id: errorIcon
         visible: false
@@ -25,7 +33,8 @@ Item {
         width: 100
         height: 100
 
-        anchors.centerIn: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
 
         MouseArea {
             anchors.fill: parent
@@ -36,7 +45,7 @@ Item {
     states: [
         State {
             name: "errorState"
-            PropertyChanges { target: errorIcon; visible: true }
+            //PropertyChanges { target: errorIcon; visible: true }
         }
     ]
 
