@@ -10,6 +10,7 @@ from PyQt5.QtCore import Qt, QTimer, QObject, pyqtSignal, pyqtSlot, QRunnable, Q
 
 from time import strftime, localtime
 from datetime import datetime
+import calendar
 
 import obd, time
 from obd import OBDStatus
@@ -33,7 +34,8 @@ class Backend(QObject):
 
     # Signala for QML
     data = pyqtSignal(int, int, int, float, arguments=['speed', 'rpm', 'temp', 'battery'])
-    time = pyqtSignal(str, str, int, bool, arguments=['hour_text', 'minute_text', 'second', 'PM'])
+    time = pyqtSignal(int, int, int, str, str, bool, arguments=['hour', 'minute', 'second', 'hour_text', 'minute_text', 'PM'])
+    date = pyqtSignal(str, int, int, arguments=['day', 'date', 'totalDays'])
     error = pyqtSignal(bool)
     
     # Signals for OBD2 worker
@@ -56,6 +58,7 @@ class Backend(QObject):
         self.timer2 = QTimer()
         self.timer2.setInterval(500)
         self.timer2.timeout.connect(self.update_time)
+        self.timer2.timeout.connect(self.update_date)
         self.timer2.start()
 
         # Create worker for OBD2, connect signals and slots
@@ -122,13 +125,19 @@ class Backend(QObject):
         time = localtime()
         hour = strftime("%-I", localtime()) 
         minute = strftime("%M", localtime()) 
-
         if (strftime("%p").upper() == "PM"):
             PM = True
         else:
             PM = False
-  
-        self.time.emit(hour, minute, time.tm_sec, PM)
+
+        self.time.emit(time.tm_hour % 12, time.tm_min, time.tm_sec, hour, minute, PM)
+
+    def update_date(self):
+        day = datetime.today().strftime('%a')
+        date = int(datetime.today().strftime('%-d')) # Probably a way to get day of month in integer to avoid type casting... 
+        totalDays = calendar.monthrange(datetime.today().year, datetime.today().month)[1]
+
+        self.date.emit(day, date, totalDays)
 
 # Worker thread for OBD2 communication
 class OBD2Worker(QObject):

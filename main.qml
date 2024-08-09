@@ -50,7 +50,6 @@ ApplicationWindow {
         property string accent: "#CE2029"
         property string bgcolor: "#2A2A2A"   
         property int selectedThemeIndex: 0
-
         property int currentBrightness: 0
     }
 
@@ -61,10 +60,11 @@ ApplicationWindow {
         id: mainView
         anchors.fill: parent
 
-        Item {
-            DefaultDash{ id: defaultDash }
-        }
+        currentIndex: 1
 
+        Item {
+            DefaultDash{}
+        }
 
         Item {
             SimpleDash{}

@@ -16,6 +16,8 @@ Item {
     property bool enableAnimation: false
     property int animationDur: 2000
 
+    AnalogClock {}
+
     ErrorIcon {
         id: errorIcon
         visible: false

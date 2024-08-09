@@ -39,7 +39,7 @@ Item {
             opacity: 0.2
     
             source: ShaderEffectSource {
-                sourceItem: defaultDash
+                sourceItem: mainView
                 sourceRect: Qt.rect(fastBlur.x-overlayWidth, fastBlur.y, fastBlur.width, fastBlur.height)
             }
         }
