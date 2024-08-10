@@ -100,7 +100,7 @@ Item {
             }
         }
 
-        /* TEMPORARY Test button
+        // TEMPORARY Test button
         Rectangle {
 
             id: testButton
@@ -128,6 +128,8 @@ Item {
                 anchors.fill: parent
                 onClicked: { 
                     testButton.state == 'clicked' ? testButton.state = "" : testButton.state = 'clicked';
+                    loadedDashIndex == 1 ? loadedDashIndex = 0 : loadedDashIndex = 1
+                    console.log(loadedDashIndex)
                 }
             }
 
@@ -135,14 +137,13 @@ Item {
                 State {
                     name: "clicked"
                     PropertyChanges { target: testButton; color: settings.color2 }
-                    PropertyChanges { target: testLoader; active: true }
                 }
             ]
 
             transitions: Transition {
                 ColorAnimation { target: testButton; property: "color"; duration: 100 }
             }
-        } */
+        }
     }
 
     Loader { 

@@ -258,6 +258,7 @@ Item {
             anchors.fill: parent
             onClicked: {
                 speedometer.state == 'clicked' ? speedometer.state = "" : speedometer.state = 'clicked';
+                defaultDash.state == 'unloaded' ? defaultDash.state = "" : defaultDash.state = 'unloaded';
                 console.log("Clicked")
             }
         }

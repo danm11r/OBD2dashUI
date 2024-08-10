@@ -62,14 +62,34 @@ ApplicationWindow {
         id: mainView
         anchors.fill: parent
 
+        property alias loaderItem1: loader1.item
+        property alias loaderItem2: loader2.item
+
         currentIndex: 0
 
-        Item {
-            DefaultDash{}
+        Loader {
+            active: true
+            id: loader1
+            sourceComponent: DefaultDash{}
         }
 
-        Item {
-            SimpleDash{}
+        Loader {
+            active: false
+            id: loader2
+            sourceComponent: SimpleDash{}
+        }
+
+        onCurrentIndexChanged: {
+            if (currentIndex == 0) {
+                loader1.active = true
+                loaderItem1.state = 'loaded'
+                loaderItem2.state = 'unloaded'
+            }
+            else if (currentIndex == 1) {
+                loader2.active = true
+                loaderItem2.state = 'loaded'
+                loaderItem1.state = 'unloaded'
+            }
         }
     }
 

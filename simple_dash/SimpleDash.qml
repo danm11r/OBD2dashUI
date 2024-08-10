@@ -14,52 +14,43 @@ Item {
     property int arcWidth: 16
     property bool enableMask: true
     property bool enableAnimation: false
-    property int animationDur: 2000
-
+    property int animationDur: 500
     property int widgetRadius: 180
+    property int clockRadius: height/2
 
-    AnalogClock {}
-
-    // Row and column positioning should be used once final placement determined
-    Speedometer { x: 130 }
-    
-    Tachometer { x: 150 + widgetRadius*2 }
-
-    // Temporarily disabled until final location determined
-    ErrorIcon {
-        id: errorIcon
-        visible: false
-    
-        width: 100
-        height: 100
-
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: errorMsg.open()
-        }
-    }
+    AnalogClock { id: analogClock; x: parent.width}
+    Speedometer { id: speedometer; x: 130; y: -widgetRadius*2 }    
+    Tachometer { id: tachometer; x: 150 + widgetRadius*2; y: -widgetRadius*2 }
 
     states: [
         State {
-            name: "errorState"
-            //PropertyChanges { target: errorIcon; visible: true }
+            name: "loaded"
+            PropertyChanges { target: speedometer; y: 0 }
+            PropertyChanges { target: tachometer; y: 0 }
+            PropertyChanges { target: analogClock; x: parent.width - clockRadius*2 }
+        },
+        State {
+            name: "unloaded"
+            PropertyChanges { target: delayTimer; running: true }
         }
     ]
 
-    Connections {
-        target: backend
+    // Wait for previous animations to complete before unloading width
+    Timer {
+        id: delayTimer
+        interval: animationDur
+        running: false
+        repeat: false
+        onTriggered: loader2.active = false
+    }
 
-        function onError (errormsg) {
-            
-            if (errormsg == true) {
-                simpleDash.state = "errorState"
-                errorMsg.open()
-            }
-            else
-                simpleDash.state = ""
-        }
+    transitions: Transition {
+        NumberAnimation { target: speedometer; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: tachometer; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: analogClock; property: "x"; easing.type: Easing.InOutQuad; duration: animationDur }
+    }
+
+    onStateChanged: {
+        console.log("Simple dash changing state: " + simpleDash.state);
     }
 }

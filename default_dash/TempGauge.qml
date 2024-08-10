@@ -8,9 +8,6 @@ Item {
 
     width: 240
     height: 240
-
-    x: parent.width/2
-    y: .8*parent.height + 1000
     
     Rectangle {
         x: -width/2
@@ -227,6 +224,4 @@ Item {
             color: "#CE2029"
         }
     }
-
-    NumberAnimation on y { to: y - 1000; easing.type: Easing.InOutQuad; duration: animationDur }
 }

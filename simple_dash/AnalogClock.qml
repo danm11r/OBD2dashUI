@@ -11,12 +11,9 @@ Item {
     width: parent.height
     height: parent.height
 
-    anchors.right: parent.right
-
     property string hour
     property string minute
     property int textSize: 120
-    property int clockRadius: height/2
     property var time: {'hour': 0, 'minute': 0, 'second': 0, 'hour_text': "0", 'minute_text': "0", 'PM': false } // This shares the same name as the signal and should probably be changed to something else
     property var currDate: {'day': "-", 'date': 0, 'totalDays': 0 }
 
@@ -35,9 +32,9 @@ Item {
                 centerX: 0; centerY: 0
                 centerRadius: 360
                 focalX: centerX; focalY: centerY
-                GradientStop { position: 0; color: "black"; NumberAnimation on position { to: 0.6; easing.type: Easing.InOutQuad; duration: animationDur }}
-                GradientStop { position: 0; color: settings.color4; NumberAnimation on position { to: .95; easing.type: Easing.InOutQuad; duration: animationDur }}
-                GradientStop { position: 0; color: "black"; NumberAnimation on position { to: 1.5; easing.type: Easing.InOutQuad; duration: animationDur }}
+                GradientStop { position: 0.6; color: "black" }
+                GradientStop { position: 0.95; color: settings.color4 }
+                GradientStop { position: 1.5; color: "black" }
             }
 
             PathAngleArc {

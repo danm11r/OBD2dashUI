@@ -15,7 +15,7 @@ Item {
     property bool enableAnimation: false
     property int animationDur: 2000
 
-    Speedometer{width: 720; height: 720}
+    Speedometer{width: 720; height: 720 }
     Tachometer{x: parent.width - 720; width: 720; height: 720}
 
     // Mask off the area beyond the gauges only during the startup animation
@@ -69,8 +69,8 @@ Item {
         }
     }
 
-    TempGauge {}
-    Clock{}
+    TempGauge { x: parent.width/2; y: .8*parent.height }
+    Clock{ x: parent.width/2; y: .2*parent.height}
 
     ErrorIcon {
         id: errorIcon

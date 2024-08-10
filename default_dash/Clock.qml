@@ -9,9 +9,6 @@ Item {
     width: 240
     height: 240
 
-    x: parent.width/2
-    y: .2*parent.height - 1000
-
     property string hour
     property string minute
     property int textSize: 80
@@ -71,6 +68,4 @@ Item {
             time = {'hour': hour, 'minute': minute, 'second': second, 'hour_text': hour_text, 'minute_text': minute_text, 'PM': PM};
         }
     }
-
-    NumberAnimation on y { to: y + 1000; easing.type: Easing.InOutQuad; duration: animationDur }
 }

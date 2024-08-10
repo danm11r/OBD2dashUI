@@ -8,7 +8,7 @@ Item {
 
     width: widgetRadius*2
     height: widgetRadius*2
-    
+
     // Background
     Rectangle {
 
@@ -44,7 +44,7 @@ Item {
         Text {
             id: rpmText
             anchors.centerIn: parent
-            text: (rpm >= 1000) ? Math.round(rpm/1000 * 100)/100 : rpm
+            text: (rpm >= 1000) ? (rpm/1000).toFixed(2) : rpm //Math.round(rpm/1000 * 100)/100 : rpm
             font.pixelSize: widgetRadius*(2/3)
             font.bold: true
             font.italic: true
