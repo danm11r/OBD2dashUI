@@ -6,8 +6,8 @@ import QtQuick.Shapes 1.15
 
 Item {
 
-    width: 240
-    height: 240
+    width: widgetRadius*2
+    height: widgetRadius*2
     
     Rectangle {
         x: -width/2
@@ -224,4 +224,6 @@ Item {
             color: "#CE2029"
         }
     }
+
+    NumberAnimation on y { to: .8*parent.height; easing.type: Easing.InOutQuad; duration: animationDur }
 }

@@ -9,19 +9,24 @@ Item {
 
     id: defaultDash
 
-    anchors.fill: parent
+    // Anchor would be better but doesnt load properly for startup
+    width: 1600
+    height: 720
 
     property bool enableMask: true
     property bool enableAnimation: false
-    property int animationDur: 2000
+    property int animationDur: (startingAnimationComplete) ? 1000 : 2000
+    property int widgetRadius: 120
 
-    Speedometer{width: 720; height: 720 }
-    Tachometer{x: parent.width - 720; width: 720; height: 720}
+    property bool error: false
+
+    Speedometer{ id: speedometer; width: 720; height: 720 }
+    Tachometer{ id: tachometer; x: parent.width - 720; width: 720; height: 720 }
 
     // Mask off the area beyond the gauges only during the startup animation
     Loader {
 
-        active: true // Currently set to true to resolve issue with menu overlay transparency
+        active: enableMask // Currently set to true to resolve issue with menu overlay transparency
         sourceComponent: Item {
             Rectangle {
                 id: background
@@ -69,12 +74,12 @@ Item {
         }
     }
 
-    TempGauge { x: parent.width/2; y: .8*parent.height }
-    Clock{ x: parent.width/2; y: .2*parent.height}
+    TempGauge { id: tempGauge; x: parent.width/2; y: parent.height + widgetRadius*2 }
+    Clock{ id: clock; x: parent.width/2; y: -widgetRadius*2}
 
     ErrorIcon {
         id: errorIcon
-        visible: false
+        visible: error
     
         width: 100
         height: 100
@@ -89,10 +94,35 @@ Item {
 
     states: [
         State {
-            name: "errorState"
-            PropertyChanges { target: errorIcon; visible: true }
+            name: "loaded"
+            PropertyChanges { target: tempGauge; y: .8*parent.height }
+            PropertyChanges { target: clock; y: .2*parent.height }
+        },
+        State {
+            name: "unloaded"
+            PropertyChanges { target: tempGauge; y: parent.height + widgetRadius*2 }
+            PropertyChanges { target: clock; y: -widgetRadius*2 }
+            PropertyChanges { target: speedometer; y: -parent.height }
+            PropertyChanges { target: tachometer; y: -parent.height }
+            PropertyChanges { target: delayTimer; running: true }
         }
     ]
+
+    // Wait for previous animations to complete before unloading
+    Timer {
+        id: delayTimer
+        interval: animationDur
+        running: false
+        repeat: false
+        onTriggered: loader1.active = false
+    }
+
+    transitions: Transition {
+        NumberAnimation { target: tempGauge; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: clock; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: speedometer; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: tachometer; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
+    }
 
     Connections {
         target: backend
@@ -100,10 +130,10 @@ Item {
         function onError (errormsg) {
             
             if (errormsg == true) {
-                defaultDash.state = "errorState"
+                error = true
             }
             else
-                defaultDash.state = ""
+                error = false
         }
     }
 }

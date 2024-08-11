@@ -11,7 +11,6 @@ Item {
     property int textSize: 120
     property int timerCount: 0
     property int borderOffset: 100
-    property int animationDur: 2000
     property bool animation: false
 
     // Draw background circle
@@ -118,7 +117,7 @@ Item {
     // Animate items in repeater for startup animation
     Timer {
         id: startupTimer
-        interval: 75
+        interval: animationDur/(2*maxRPM/1000)
         running: true
         repeat: true
         onTriggered: {
@@ -199,4 +198,5 @@ Item {
         running: false
         repeat: false
     }
+
 }

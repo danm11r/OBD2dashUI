@@ -49,8 +49,4 @@ Item {
         NumberAnimation { target: tachometer; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
         NumberAnimation { target: analogClock; property: "x"; easing.type: Easing.InOutQuad; duration: animationDur }
     }
-
-    onStateChanged: {
-        console.log("Simple dash changing state: " + simpleDash.state);
-    }
 }

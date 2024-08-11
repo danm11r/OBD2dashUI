@@ -68,4 +68,6 @@ Item {
             time = {'hour': hour, 'minute': minute, 'second': second, 'hour_text': hour_text, 'minute_text': minute_text, 'PM': PM};
         }
     }
+
+    NumberAnimation on y { to: .2*parent.height; easing.type: Easing.InOutQuad; duration: animationDur }
 }

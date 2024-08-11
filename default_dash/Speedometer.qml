@@ -177,7 +177,7 @@ Item {
     // Animate items in repeater for startup animation
     Timer {
         id: startupTimer
-        interval: 75
+        interval: animationDur/(2*maxMPH/10)
         running: true
         repeat: true
         onTriggered: {
@@ -201,11 +201,17 @@ Item {
         interval: 1000
         running: false
         repeat: false
+        onTriggered: {
+            if (startingAnimationComplete) {
+                enableMask = false
+                enableAnimation = true
+            }
+        }
     }
 
     // Gauge sweep because it looks cool :)
     SequentialAnimation {
-        running: !(startupTimer.running || delayTimer.running)
+        running: !(startupTimer.running || delayTimer.running) && !startingAnimationComplete
         ParallelAnimation {
             NumberAnimation { target: main; property: "speed"; easing.type: Easing.InOutQuad; to: maxMPH; duration: 1000 }
             NumberAnimation { target: main; property: "rpm"; easing.type: Easing.InOutQuad; to: maxRPM; duration: 1000 }
@@ -220,6 +226,7 @@ Item {
         }
         onFinished: {
             console.log("Starting animation complete")
+            startingAnimationComplete = true
             enableMask = false
             enableAnimation = true
         }
@@ -240,8 +247,8 @@ Item {
         },
         State {
             name: "clicked2"
-            PropertyChanges { target: main; speed: 60 }
-            PropertyChanges { target: main; rpm: 7000 }
+            PropertyChanges { target: main; speed: 65 }
+            PropertyChanges { target: main; rpm: 5250 }
             PropertyChanges { target: main; temp: 200 }
             PropertyChanges { target: main; battery: 14.3 }
         }

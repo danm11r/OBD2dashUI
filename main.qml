@@ -57,10 +57,15 @@ ApplicationWindow {
 
     property int arcWidth: 16
     property string errorText: "OBD2 Connection Failed!"
+    property bool error: true
+    property bool startingAnimationComplete: false
 
+    // Main swipe view with dashboards that are loaded dynamically
     SwipeView {
         id: mainView
         anchors.fill: parent
+
+        interactive: startingAnimationComplete
 
         property alias loaderItem1: loader1.item
         property alias loaderItem2: loader2.item
@@ -84,6 +89,7 @@ ApplicationWindow {
                 loader1.active = true
                 loaderItem1.state = 'loaded'
                 loaderItem2.state = 'unloaded'
+                loaderItem1.error = error
             }
             else if (currentIndex == 1) {
                 loader2.active = true
@@ -211,6 +217,10 @@ ApplicationWindow {
             
             if (errormsg == true) {
                 errorMsg.open()
+                error = true
+            }
+            else {
+                error = false
             }
         }
     }
