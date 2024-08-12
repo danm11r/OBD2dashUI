@@ -42,7 +42,7 @@ Item {
         anchors.fill: parent
 
         Text {
-            id: rpmText
+            id: text
             anchors.centerIn: parent
             text: (rpm >= 1000) ? (rpm/1000).toFixed(2) : rpm //Math.round(rpm/1000 * 100)/100 : rpm
             font.pixelSize: widgetRadius*(2/3)
@@ -51,9 +51,9 @@ Item {
             color: "white"
         }
         Text {
-            anchors.top: rpmText.bottom
-            anchors.horizontalCenter: rpmText.horizontalCenter
-            anchors.topMargin: -30
+            anchors.top: text.bottom
+            anchors.horizontalCenter: text.horizontalCenter
+            anchors.topMargin: -widgetRadius*(1/6)
             visible: (rpm >= 1000)
             text: "x 1000"
             font.pixelSize: widgetRadius*(1/6)
@@ -62,8 +62,8 @@ Item {
             color: "white"
         }
         Text {
-            anchors.top: rpmText.bottom
-            anchors.horizontalCenter: rpmText.horizontalCenter
+            anchors.top: text.bottom
+            anchors.horizontalCenter: text.horizontalCenter
             text: "RPM"
             font.pixelSize: widgetRadius*(1/3)
             font.bold: true

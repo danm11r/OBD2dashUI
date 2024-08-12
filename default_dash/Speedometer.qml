@@ -250,7 +250,7 @@ Item {
             PropertyChanges { target: main; speed: 65 }
             PropertyChanges { target: main; rpm: 5250 }
             PropertyChanges { target: main; temp: 200 }
-            PropertyChanges { target: main; battery: 14.3 }
+            PropertyChanges { target: main; battery: 14.9 }
         }
     ]
 

@@ -15,12 +15,14 @@ Item {
     property bool enableMask: true
     property bool enableAnimation: false
     property int animationDur: 500
-    property int widgetRadius: 180
+    property int widgetRadius: 175
     property int clockRadius: height/2
 
     AnalogClock { id: analogClock; x: parent.width}
-    Speedometer { id: speedometer; x: 130; y: -widgetRadius*2 }    
-    Tachometer { id: tachometer; x: 150 + widgetRadius*2; y: -widgetRadius*2 }
+    Speedometer { id: speedometer; x: 140; y: -widgetRadius*2 }    
+    Tachometer { id: tachometer; x: 160 + widgetRadius*2; y: -widgetRadius*2 }
+    TempGauge { id: tempGauge; x: 140; y: parent.height + widgetRadius*2 }
+    BattGauge { id: battGauge; x: 160 + widgetRadius*2; y: parent.height + widgetRadius*2 }
 
     states: [
         State {
@@ -28,6 +30,8 @@ Item {
             PropertyChanges { target: speedometer; y: 0 }
             PropertyChanges { target: tachometer; y: 0 }
             PropertyChanges { target: analogClock; x: parent.width - clockRadius*2 }
+            PropertyChanges { target: tempGauge; y: parent.height - widgetRadius*2 }
+            PropertyChanges { target: battGauge; y: parent.height - widgetRadius*2 }
         },
         State {
             name: "unloaded"
@@ -48,5 +52,7 @@ Item {
         NumberAnimation { target: speedometer; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
         NumberAnimation { target: tachometer; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
         NumberAnimation { target: analogClock; property: "x"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: tempGauge; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
+        NumberAnimation { target: battGauge; property: "y"; easing.type: Easing.InOutQuad; duration: animationDur }
     }
 }
