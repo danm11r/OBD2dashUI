@@ -89,17 +89,19 @@ ApplicationWindow {
                 loader1.active = true
                 loaderItem1.state = 'loaded'
                 loaderItem2.state = 'unloaded'
+                menuOverlay.state = ''
                 loaderItem1.error = error
             }
             else if (currentIndex == 1) {
                 loader2.active = true
                 loaderItem2.state = 'loaded'
                 loaderItem1.state = 'unloaded'
+                menuOverlay.state = 'clicked'
             }
         }
     }
 
-    MenuOverlay{}
+    MenuOverlay{ id: menuOverlay }
 
     // Error message dialog
     Dialog {

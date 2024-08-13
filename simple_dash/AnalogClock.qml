@@ -13,7 +13,7 @@ Item {
 
     property string hour
     property string minute
-    property int textSize: 120
+    property int textSize: 160
     property var time: {'hour': 0, 'minute': 0, 'second': 0, 'hour_text': "0", 'minute_text': "0", 'PM': false } // This shares the same name as the signal and should probably be changed to something else
     property var currDate: {'day': "-", 'date': 0, 'totalDays': 0 }
 
@@ -52,6 +52,7 @@ Item {
         anchors.centerIn: parent
         spacing: -30
         
+        // Time and date text        
         Text {
             id: timeText
             text: time.hour_text + ":" + time.minute_text
@@ -60,21 +61,32 @@ Item {
             color: "white"
         }
 
+        // Date text
         Row {
 
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.topMargin: -textSize*(1/4)
+
+            // Dummy text used to determine proper font size for actual text below
+            Text {
+                id: dummyText
+                visible: false
+                text: currDate.day.toUpperCase() + currDate.date
+                width: timeText.contentWidth*.9
+                fontSizeMode: Text.Fit
+                font.pixelSize: textSize
+            }
 
             Text {
-                text: currDate.day.toUpperCase() + " "
-                font.pixelSize: 80
+                text: currDate.day.toUpperCase()
+                font.pixelSize: dummyText.fontInfo.pixelSize
                 font.bold: true
                 color: settings.color3
             }
 
-
             Text {
                 text: currDate.date
-                font.pixelSize: 80
+                font.pixelSize: dummyText.fontInfo.pixelSize
                 color: settings.color1
             }
         }
