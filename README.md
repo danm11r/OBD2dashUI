@@ -5,7 +5,7 @@ Digital dashboard UI built with Python and Qt Quick
 0BD2DashUI is a PyQt5 based digital dashboard that displays real-time data from a vehicle connected via OBD2. The app uses the Python-OBD library for OBD2 communications, and an ELM327 OBD2 adapter is needed for the interface. Currently, the app will display vehicle speed, engine RPM, coolant temperature, and battery voltage. A demo of the app loading, seemlessly connecting to a vehicle over OBD2, and showing live vehicle data is shown below:
 <img src="https://github.com/user-attachments/assets/6d5ae7cc-504b-4462-a87f-9a7f4a5f4bca" width=100% height=20%>
 
-The app supports different dashboards that can be swiped between. There are currently 2: a traditional gauge cluster shown in the demo above, and a second dashboard featuring a collection of smaller gauges arranged in a grid. There is a basic settings page for selecting a color theme and adjusting the brightness of a compatible DDC/CI capable display. 
+The app supports different dashboards that can be swiped between. There are currently two: a traditional gauge cluster shown in the demo above, and a second dashboard featuring a collection of smaller gauges arranged in a grid. There is a basic settings page for selecting a color theme and adjusting the brightness of a compatible DDC/CI capable display. 
 <img src="https://github.com/user-attachments/assets/3b63295f-0e21-4344-8707-1a99f337abfd" width=100% height=20%>
 
 
